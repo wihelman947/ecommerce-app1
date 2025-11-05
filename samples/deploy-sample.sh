@@ -1,12 +1,12 @@
 #!/bin/bash
 ssh -p "${SERVER_PORT}" "${SERVER_USERNAME}"@"${SERVER_HOST}" -i key.txt -t -t -o StrictHostKeyChecking=no << 'ENDSSH'
-cd ~/ecommerce
+cd ~/ecommerce-gooboybailah
 cat .env
 set +a
 source .env
 start=$(date +"%s")
-echo $YOUR_PERSONAL_ACCESS_TOKEN | docker login --username $DOCKER_USERNAME --password-stdin
-docker pull goodboybaik/ecommerce$IMAGE_TAG
+docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+docker pull $CONTAINER_REPOSITORY:$IMAGE_TAG
 
 if [ "$(docker ps -qa -f name=$CONTAINER_NAME)" ]; then
     if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
@@ -18,7 +18,7 @@ if [ "$(docker ps -qa -f name=$CONTAINER_NAME)" ]; then
 fi
 
 docker run -d --restart unless-stopped -p $APP_PORT:$APP_PORT --env-file .env --name $CONTAINER_NAME  $CONTAINER_REPOSITORY:$IMAGE_TAG
-# $CONTAINER_REPOSITORY = goodboybaik/ecommerce
+# $CONTAINER_REPOSITORY = hendisantika/ecommerce
 docker ps
 exit
 ENDSSH
